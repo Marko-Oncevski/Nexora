@@ -4,7 +4,7 @@ import { ShoppingCart,ShoppingBag  } from "lucide-react";
 function Cart(){
     const {state,dispatch} = useCart();
     const cart = state.items
-    let total = 0;
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     let totalItem = 0;
 
     {cart.forEach(item=>{
@@ -45,10 +45,6 @@ function Cart(){
                             )
                         })}
                     </div>
-
-                    {cart.forEach(element => {
-                        total += element.price * element.quantity
-                    })}
 
                     <div className="cart-summary">
                         <div className="total-row">
