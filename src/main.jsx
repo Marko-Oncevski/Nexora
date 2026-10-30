@@ -7,6 +7,7 @@ import { CartProvider } from './context/CartContext.jsx'
 import { SearchProvider } from './context/SearchContext.jsx'
 import { FavoritesProvider } from './context/FavoritesContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
