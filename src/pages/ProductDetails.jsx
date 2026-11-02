@@ -1,9 +1,33 @@
 import { useParams,useNavigate,Link } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import { useAuth } from "../hooks/useAuth";
+import { useCart } from "../hooks/useCart";
+import { useProductToast } from "../hooks/useProductToast";
+import ProductToast from "../components/ProductToast";
+
 function ProductDetails() {
     const {id} = useParams();
     const navigate = useNavigate();
     const {loading,error,data} = useFetch(`https://dummyjson.com/products/${id}`);
+    const {dispatch} = useCart();
+    const {user,login} = useAuth();
+    const {toast,showToast,hideToast} = useProductToast();
+
+    function handleAddToCart() {
+        if (!user) {
+            showToast("login", "Please log in to add products to your cart.");
+            return;
+        }
+
+        dispatch({type: "ADD_ITEM", payload: data});
+        showToast("added", `${data.title} was added successfully.`);
+    }
+
+    function handleToastLogin() {
+        login();
+        hideToast();
+    }
+
     if(loading) return <p>Loading...</p>
     if(error) return <p>{error}</p>
     
@@ -52,8 +76,24 @@ function ProductDetails() {
                         <span>⭐ Rating: {data.rating}</span>
                         <span>📦 Stock: {data.stock}</span>
                     </div>
+
+                    <div className="details-actions">
+                        <button
+                            type="button"
+                            className="add-button"
+                            onClick={handleAddToCart}
+                        >
+                            Add to Cart
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            <ProductToast
+                toast={toast}
+                onClose={hideToast}
+                onLogin={handleToastLogin}
+            />
         </div>
     );
 }

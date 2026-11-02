@@ -1,9 +1,12 @@
 import { useFavorites } from "../hooks/useFavorites";
+import { useAuth } from "../hooks/useAuth";
 import ProductCard from "../components/ProductCard";
 
 
 function Favorites() {
     const { favorites } = useFavorites();
+    const { user } = useAuth();
+    const visibleFavorites = user ? favorites : [];
 
     return (
         <section className="products-section favorites-section">
@@ -15,14 +18,14 @@ function Favorites() {
                 <h1>My Favorites</h1>
 
                 <p className="products-description">
-                    {favorites.length}{" "}
-                    {favorites.length === 1
+                    {visibleFavorites.length}{" "}
+                    {visibleFavorites.length === 1
                         ? "favorite product"
                         : "favorite products"}
                 </p>
             </div>
 
-            {favorites.length === 0 ? (
+            {visibleFavorites.length === 0 ? (
                 <div className="favorites-empty">
                     <span className="favorites-empty-icon">♡</span>
 
@@ -35,7 +38,7 @@ function Favorites() {
                 </div>
             ) : (
                 <div className="products-grid favorites-grid">
-                    {favorites.map(product => (
+                    {visibleFavorites.map(product => (
                         <ProductCard
                             key={product.id}
                             product={product}
