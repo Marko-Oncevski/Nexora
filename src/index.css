@@ -1638,6 +1638,15 @@ ABOUT & NOT FOUND PAGES
     line-height: 1.8;
 }
 
+.not-found-page .about-eyebrow {
+    margin-bottom: 12px;
+    color: var(--color-primary);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.4;
+    letter-spacing: 2px;
+}
+
 /* =========================
 FOOTER
 ========================= */

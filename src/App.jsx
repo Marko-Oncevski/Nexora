@@ -43,8 +43,8 @@ function App() {
         <Route path='about' element={<About/>}/>
         <Route path='search' element={<Search /> } />
         <Route path= 'favorites' element={<Favorites/>}/>
+        <Route path='*' element={<NotFound/>}/>
       </Route>
-      <Route path='*' element={<NotFound/>}/>
       
     
     </Routes>
