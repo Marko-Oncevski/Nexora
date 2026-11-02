@@ -2,9 +2,12 @@ import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { useEffect } from "react";
 import { useSearch } from "../hooks/useSearch";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 
 export function Search() {
+    usePageTitle("Nexora - Search");
+
     const [searchParams] = useSearchParams();
     const query = searchParams.get("q")?.trim() ?? "";
     const {state,searchProducts} = useSearch();

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Layout from './layouts/Layout';
 import Home from './pages/Home';
 import Products from './pages/Products';
@@ -14,6 +14,17 @@ function App() {
   
 
   const [isCartOpen,setIsCartOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isCartOpen) return;
+
+    const previousTitle = document.title;
+    document.title = "Nexora - Cart";
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [isCartOpen]);
 
 
 

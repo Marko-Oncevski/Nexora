@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
+import { usePageTitle } from "../hooks/usePageTitle";
 function Home() {
+    usePageTitle("Nexora");
+
     return (
         <main className="home-page">
             <section className="home-hero">

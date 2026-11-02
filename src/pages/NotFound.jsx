@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
+import { usePageTitle } from "../hooks/usePageTitle";
 function NotFound(){
+    usePageTitle("Nexora - Page Not Found");
+
     return (
         <div>
             <h1>Page not found </h1>

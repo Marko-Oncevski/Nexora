@@ -1,9 +1,12 @@
 import { useFavorites } from "../hooks/useFavorites";
 import { useAuth } from "../hooks/useAuth";
+import { usePageTitle } from "../hooks/usePageTitle";
 import ProductCard from "../components/ProductCard";
 
 
 function Favorites() {
+    usePageTitle("Nexora - Favorites");
+
     const { favorites } = useFavorites();
     const { user } = useAuth();
     const visibleFavorites = user ? favorites : [];

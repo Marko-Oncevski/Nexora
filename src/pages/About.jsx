@@ -1,7 +1,10 @@
 
 import { Link } from "react-router-dom";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 function About() {
+    usePageTitle("Nexora - About");
+
     return (
         <main className="about-page">
             <section className="about-intro">

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import ProductList from "../components/ProductList";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { usePageTitle } from "../hooks/usePageTitle";
 function Products() {
+    usePageTitle("Nexora - Products");
+
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
     const [selectedCategory,setSelectedCategory] = useState("");
     const categoryLabels = {

@@ -3,12 +3,18 @@ import useFetch from "../hooks/useFetch";
 import { useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
 import { useProductToast } from "../hooks/useProductToast";
+import { usePageTitle } from "../hooks/usePageTitle";
 import ProductToast from "../components/ProductToast";
 
 function ProductDetails() {
     const {id} = useParams();
     const navigate = useNavigate();
     const {loading,error,data} = useFetch(`https://dummyjson.com/products/${id}`);
+    usePageTitle(
+        data?.title
+            ? `Nexora - ${data.title}`
+            : "Nexora - Product Details"
+    );
     const {dispatch} = useCart();
     const {user,login} = useAuth();
     const {toast,showToast,hideToast} = useProductToast();
