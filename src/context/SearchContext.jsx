@@ -1,4 +1,4 @@
-import { createContext,useReducer ,useCallback} from "react";
+import { createContext,useReducer ,useCallback,useRef} from "react";
 import { products } from "../api/products";
 
 export const SearchContext = createContext();
@@ -44,14 +44,19 @@ export function searchReducer(state,action){
 
 export function SearchProvider({children}){
     const [state,dispatch] = useReducer(searchReducer,initialState);
+    const latestRequestId = useRef(0);
 
     const searchProducts = useCallback(
     async (query) => {
+        const requestId = ++latestRequestId.current;
         dispatch({type: "SEARCH_START",payload: query});
         try{
             const response = await products.search(query);
-            dispatch({type: "SEARCH_SUCCESS",payload: response.products})
+            if(requestId !== latestRequestId.current) return;
+            const results = Array.isArray(response?.products) ? response.products : [];
+            dispatch({type: "SEARCH_SUCCESS",payload: results})
         }catch(e){
+            if(requestId !== latestRequestId.current) return;
             dispatch({type: "SEARCH_ERROR",payload: e.message})
         }  
     },[dispatch]

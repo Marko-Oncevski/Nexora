@@ -1,5 +1,5 @@
 import { Moon, Sun, ShoppingCart, Menu, User, X } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { useAuth } from "../hooks/useAuth";
@@ -13,16 +13,40 @@ function Header({ setIsCartOpen }) {
     const [searchParams] = useSearchParams();
     const query = searchParams.get("q") ?? "";
     const [search, setSearch] = useState(query);
+    const [previousQuery, setPreviousQuery] = useState(query);
     const { theme, setTheme } = useContext(ThemeContext);
+    const headerRef = useRef(null);
+
+    useEffect(() => {
+        const header = headerRef.current;
+
+        if (!header) return undefined;
+
+        function updateHeaderHeight() {
+            document.documentElement.style.setProperty(
+                "--header-height",
+                `${header.offsetHeight}px`
+            );
+        }
+
+        updateHeaderHeight();
+
+        const observer = new ResizeObserver(updateHeaderHeight);
+        observer.observe(header);
+
+        return () => observer.disconnect();
+    }, []);
+
     let cartCount = 0;
 
     state.items.forEach((item) => {
         cartCount += item.quantity;
     });
 
-    useEffect(() => {
+    if (query !== previousQuery) {
+        setPreviousQuery(query);
         setSearch(query);
-    }, [query]);
+    }
 
     function handleLogoClick() {
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -49,7 +73,7 @@ function Header({ setIsCartOpen }) {
     }
 
     return (
-        <header className="header">
+        <header className="header" ref={headerRef}>
             <div className="header-top-row">
                 <Link to="/" className="brand" onClick={handleLogoClick}>
                     <div className="logo-icon">N</div>
@@ -170,6 +194,7 @@ function Header({ setIsCartOpen }) {
             <nav id="primary-navigation" className={isMenuOpen ? "open" : ""}>
                 <NavLink
                     to="/"
+                    end
                     className={({ isActive }) =>
                         isActive ? "nav-link active" : "nav-link"
                     }

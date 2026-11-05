@@ -22,7 +22,9 @@ function App() {
     document.title = "Nexora - Cart";
 
     return () => {
-      document.title = previousTitle;
+      if (document.title === "Nexora - Cart") {
+        document.title = previousTitle;
+      }
     };
   }, [isCartOpen]);
 

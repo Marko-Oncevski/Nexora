@@ -88,6 +88,9 @@ function cartReducer(state,action){
         }
         case "REMOVE_ITEM":{
             const foundItem = state.items.find(product => product.id === action.payload.id)
+            if (!foundItem) {
+                return state;
+            }
             if(foundItem.quantity === 1){
                 return {
                     ...state,

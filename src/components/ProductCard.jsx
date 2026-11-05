@@ -2,16 +2,18 @@ import { Link } from "react-router-dom";
 import { useCart } from "../hooks/useCart";
 import { useFavorites } from "../hooks/useFavorites";
 import { useAuth } from "../hooks/useAuth";
-import { useProductToast } from "../hooks/useProductToast";
-import ProductToast from "./ProductToast";
+import { useToast } from "../hooks/useToast";
+
+const FALLBACK_PRODUCT_IMAGE =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f1f5f9'/%3E%3Cpath d='M90 210l45-55 35 40 25-30 35 45z' fill='%23cbd5e1'/%3E%3Ccircle cx='195' cy='105' r='18' fill='%23cbd5e1'/%3E%3C/svg%3E";
 
 function ProductCard({product}){
     const {dispatch} = useCart();
-    const { user, login } = useAuth();
+    const { user } = useAuth();
     const {favorites,toggleFavorite} = useFavorites()
     const foundFavorite = favorites.find(item => item.id === product.id);
     const isFavorite = Boolean(user && foundFavorite);
-    const { toast, showToast, hideToast } = useProductToast();
+    const { showToast } = useToast();
 
     function handleAddToCart() {
         if (!user) {
@@ -36,17 +38,12 @@ function ProductCard({product}){
         }
     }
 
-    function handleToastLogin() {
-        login();
-        hideToast();
-    }
-
     return (
         <div className="product-card">
             <div className="product-image-wrapper">
                 <img
-                    src={product.images[0]}
-                    alt={product.title}
+                    src={product.images?.[0] || FALLBACK_PRODUCT_IMAGE}
+                    alt={product.title || "Product"}
                     className="product-image"
                 />
 
@@ -73,12 +70,6 @@ function ProductCard({product}){
             </button>
 
             <Link to={`/products/${product.id}`} className="details-button">View Details</Link>
-
-            <ProductToast
-                toast={toast}
-                onClose={hideToast}
-                onLogin={handleToastLogin}
-            />
         </div>
     );
 }

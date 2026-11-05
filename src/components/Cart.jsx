@@ -16,7 +16,7 @@ function Cart(){
 
             <div className="cart-header">
                 <div>
-                    <h2>Shopping Cart</h2>
+                    <h2 id="cart-drawer-title">Shopping Cart</h2>
                     <p>{totalItem} {totalItem === 1 ? "item" : "items"}</p>
                 </div>
 

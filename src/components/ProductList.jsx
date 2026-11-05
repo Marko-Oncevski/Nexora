@@ -1,6 +1,6 @@
 import useFetch from "../hooks/useFetch";
 import ProductCard from "./ProductCard";
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import ProductSkeleton from "./ProductSkeleton";
 
 function ProductList({selectedCategory}){
@@ -12,11 +12,10 @@ function ProductList({selectedCategory}){
                                     `https://dummyjson.com/products?limit=${productPerPage}&skip=${skip}`
     const {loading,error,data} = useFetch(url);
 
-    const totalPages = data && Math.ceil(data.total / productPerPage);
-
-    useEffect(()=>{
-        setPage(1)
-    },[selectedCategory]);
+    const products = Array.isArray(data?.products) ? data.products : [];
+    const totalPages = Number.isFinite(data?.total) && data.total > 0
+        ? Math.ceil(data.total / productPerPage)
+        : 1;
 
     return (
         <>
@@ -29,10 +28,10 @@ function ProductList({selectedCategory}){
                         <ProductSkeleton key={index} />
                 ))}
 
-                {!loading && !error && data && data.products.length === 0 && (
+                {!loading && !error && products.length === 0 && (
                     <p>No products found.</p>
                 )}
-                {!loading && !error && data && data.products.map(product => {
+                {!loading && !error && products.map(product => {
                     return (
                         <ProductCard
                             product={product}
@@ -43,7 +42,7 @@ function ProductList({selectedCategory}){
 
             </div>
             
-            {data && !loading && !error && data.products.length > 0 && (
+            {!loading && !error && products.length > 0 && (
                 <div className="pagination">
                     <p>Page {page} of {totalPages}</p>
 

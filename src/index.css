@@ -63,6 +63,18 @@ GLOBAL STYLES
 
     --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.04);
     --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06);
+    /* Sticky header height. Header.jsx keeps this in sync at runtime;
+       the value below is the desktop fallback. */
+    --header-height: 103px;
+}
+
+/* Stacked header is taller between tablet and laptop widths, so the
+   products sidebar needs a matching offset even before the runtime
+   measurement applies. */
+@media (max-width: 1199px) {
+    :root {
+        --header-height: 218px;
+    }
 }
 
 body[data-theme="dark"] {
@@ -2660,7 +2672,7 @@ PRODUCT BREADCRUMBS
     border-radius: 14px;
     background-color: var(--color-surface);
     position: sticky;
-    top: 24px;
+    top: calc(var(--header-height) + 16px);
     align-self: start;
 }
 

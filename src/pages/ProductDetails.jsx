@@ -2,9 +2,8 @@ import { useParams,useNavigate,Link } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
-import { useProductToast } from "../hooks/useProductToast";
+import { useToast } from "../hooks/useToast";
 import { usePageTitle } from "../hooks/usePageTitle";
-import ProductToast from "../components/ProductToast";
 
 function ProductDetails() {
     const {id} = useParams();
@@ -16,8 +15,8 @@ function ProductDetails() {
             : "Nexora - Product Details"
     );
     const {dispatch} = useCart();
-    const {user,login} = useAuth();
-    const {toast,showToast,hideToast} = useProductToast();
+    const {user} = useAuth();
+    const {showToast} = useToast();
 
     function handleAddToCart() {
         if (!user) {
@@ -29,14 +28,15 @@ function ProductDetails() {
         showToast("added", `${data.title} was added successfully.`);
     }
 
-    function handleToastLogin() {
-        login();
-        hideToast();
-    }
-
     if(loading) return <p>Loading...</p>
     if(error) return <p>{error}</p>
-    
+
+    if (!data || typeof data !== "object") {
+        return <p>Something went wrong... Please try again later!</p>;
+    }
+
+    const hasValidPrice = Number.isFinite(data.price);
+
     return (
         <div className="product-details">
             <nav className="breadcrumbs" aria-label="Breadcrumb">
@@ -58,7 +58,7 @@ function ProductDetails() {
 
             <div className="details-card">
                 <div className="details-image">
-                    <img src={data.images[0]} alt={data.title}/>
+                    <img src={data.images?.[0] || undefined} alt={data.title}/>
                 </div>
 
                 <div className="details-info">
@@ -71,7 +71,7 @@ function ProductDetails() {
                     </h2>
 
                     <p className="details-price">
-                        ${data.price.toFixed(2)}
+                        ${hasValidPrice ? data.price.toFixed(2) : "—"}
                     </p>
 
                     <p className="details-description">
@@ -88,18 +88,13 @@ function ProductDetails() {
                             type="button"
                             className="add-button"
                             onClick={handleAddToCart}
+                            disabled={!hasValidPrice}
                         >
                             Add to Cart
                         </button>
                     </div>
                 </div>
             </div>
-
-            <ProductToast
-                toast={toast}
-                onClose={hideToast}
-                onLogin={handleToastLogin}
-            />
         </div>
     );
 }

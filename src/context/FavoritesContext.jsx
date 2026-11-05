@@ -1,24 +1,48 @@
 import { createContext ,useState,useEffect} from "react";
 export const FavoritesContext = createContext();
 
+function isValidFavorite(item){
+    return (
+        item !== null &&
+        typeof item === "object" &&
+        !Array.isArray(item) &&
+        item.id !== undefined
+    )
+}
+
 export function FavoritesProvider({children}){
     const [favorites,setFavorites] = useState(()=>{
-        const savedItems = localStorage.getItem("nexora-favorites")
-        if(savedItems) return JSON.parse(savedItems);
-        return []
+        try {
+            const savedItems = localStorage.getItem("nexora-favorites")
+
+            if(!savedItems) return []
+
+            const parsed = JSON.parse(savedItems)
+
+            return Array.isArray(parsed) ? parsed.filter(isValidFavorite) : []
+        } catch {
+            return []
+        }
     })
 
     useEffect(()=> {
-        localStorage.setItem("nexora-favorites",JSON.stringify(favorites))
+        try {
+            localStorage.setItem("nexora-favorites",JSON.stringify(favorites))
+        } catch {
+            // Storage may be unavailable or full; keep the in-memory favorites working.
+        }
     },[favorites])
 
     function toggleFavorite(product){
-        const foundFavorite = favorites.find(item => item.id === product.id)
-        if(foundFavorite){
-            setFavorites(favorites.filter(item => item.id !== product.id))
-        } else {
-            setFavorites([...favorites,product])
-        }
+        setFavorites(prevFavorites => {
+            const foundFavorite = prevFavorites.find(item => item.id === product.id)
+
+            if(foundFavorite){
+                return prevFavorites.filter(item => item.id !== product.id)
+            }
+
+            return [...prevFavorites, product]
+        })
     }
 
     return (

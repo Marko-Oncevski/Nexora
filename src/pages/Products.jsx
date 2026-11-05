@@ -132,7 +132,7 @@ function Products() {
                         </p>
                     </div>
 
-                    <ProductList selectedCategory={selectedCategory}/>
+                    <ProductList key={selectedCategory} selectedCategory={selectedCategory}/>
                 </main>
 
             </div>
